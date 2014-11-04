@@ -41,7 +41,7 @@ import java.io.InputStreamReader;
  *
  * @author Pietro Rampini (rampini.pietro@gmail.com)
  */
-class ASyncCheck extends AsyncTask<String, Integer, Integer> {
+public class ASyncCheck extends AsyncTask<String, Integer, Integer> {
     private static final String PLAY_STORE_ROOT_WEB = "https://play.google.com/store/apps/details?id=";
     private static final String PLAY_STORE_HTML_TAGS_TO_GET_RIGHT_POSITION = "itemprop=\"softwareVersion\"> ";
     private static final String PLAY_STORE_HTML_TAGS_TO_REMOVE_USELESS_CONTENT = "  </div> </div>";
@@ -58,14 +58,16 @@ class ASyncCheck extends AsyncTask<String, Integer, Integer> {
     private static final int STORE_ERROR = 4;
 
     Store mStore;
-    Context mContext;
+    private String packageName;
+    private Context mContext;
     ASyncCheckResult mResultInterface;
     String mVersionDownloadable;
 
-    ASyncCheck(Store store, ASyncCheckResult resultInterface, Context activity) {
+    public ASyncCheck(Store store, ASyncCheckResult resultInterface, Context context, String packagename) {
         this.mStore = store;
         this.mResultInterface = resultInterface;
-        this.mContext = activity;
+        this.packageName = packagename;
+        this.mContext = context;
     }
 
     @Override
@@ -77,7 +79,7 @@ class ASyncCheck extends AsyncTask<String, Integer, Integer> {
                 HttpConnectionParams.setSoTimeout(params, 5000);
                 HttpClient client = new DefaultHttpClient(params);
                 if (mStore == Store.GOOGLE_PLAY) {
-                    HttpGet request = new HttpGet(PLAY_STORE_ROOT_WEB + mContext.getPackageName()); // Set the right Play Store page by getting package name.
+                    HttpGet request = new HttpGet(PLAY_STORE_ROOT_WEB +packageName); // Set the right Play Store page by getting package name.
                     HttpResponse response = client.execute(request);
                     InputStream is = response.getEntity().getContent();
                     BufferedReader reader = new BufferedReader(new InputStreamReader(is));
@@ -99,7 +101,7 @@ class ASyncCheck extends AsyncTask<String, Integer, Integer> {
                         return MULTIPLE_APKS_PUBLISHED;
                     }
                 } else if (mStore == Store.AMAZON) {
-                    HttpGet request = new HttpGet(AMAZON_STORE_ROOT_WEB + mContext.getPackageName()); // Set the right Amazon App Store page by getting package name.
+                    HttpGet request = new HttpGet(AMAZON_STORE_ROOT_WEB + packageName); // Set the right Amazon App Store page by getting package name.
                     HttpResponse response = client.execute(request);
                     InputStream is = response.getEntity().getContent();
                     BufferedReader reader = new BufferedReader(new InputStreamReader(is));

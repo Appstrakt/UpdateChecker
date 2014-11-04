@@ -12,14 +12,14 @@ repositories {
 apply plugin: 'android-library'
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+    compileSdkVersion Integer.parseInt(project.android_build_compileSdkVersion)
+    buildToolsVersion project.android_build_buildToolsVersion
+
 
     defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.compileSdkVersion
-        versionName project.VERSION_NAME
-        versionCode Integer.parseInt(project.VERSION_CODE)
+        minSdkVersion Integer.parseInt(project.android_build_minSdkVersion)
+        targetSdkVersion Integer.parseInt(project.android_build_targetSdkVersion)
+
     }
     buildTypes {
         release {

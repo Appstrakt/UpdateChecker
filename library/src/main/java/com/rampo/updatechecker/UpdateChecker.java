@@ -125,7 +125,7 @@ public class UpdateChecker implements ASyncCheckResult, UpdateCheckerResult {
      * Start the process
      */
     public static void start() {
-        ASyncCheck asynctask = new ASyncCheck(mStore, mCheckResultCallback, mActivity);
+        ASyncCheck asynctask = new ASyncCheck(mStore, mCheckResultCallback, mActivity,mActivity.getPackageName());
         asynctask.execute();
     }
 
