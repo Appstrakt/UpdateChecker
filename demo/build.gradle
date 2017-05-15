@@ -1,4 +1,4 @@
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -14,9 +14,13 @@ android {
 
     buildTypes {
         release {
-            runProguard false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
+    }
+
+    lintOptions {
+        abortOnError false
     }
 }
 

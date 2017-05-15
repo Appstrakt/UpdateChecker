@@ -1,34 +1,27 @@
 buildscript {
     repositories {
-        mavenCentral()
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.0'
+        classpath 'com.android.tools.build:gradle:2.3.2'
     }
 }
 
 allprojects {
     repositories {
-        mavenCentral()
+        jcenter()
     }
 }
 
 ext {
     libraryPackageName = "com.rampo.updatechecker"
-    minSdkVersion = 7
-    compileSdkVersion = 19
-    buildToolsVersion = "19.1.0"
+    minSdkVersion = 9
+    compileSdkVersion = 25
+    buildToolsVersion = "25.0.2"
 }
 
 def isReleaseBuild() {
     return version.contains("_develop") == false
-}
-
-allprojects {
-    repositories {
-        mavenCentral()
-    }
 }
 
 apply plugin: 'android-reporting'
