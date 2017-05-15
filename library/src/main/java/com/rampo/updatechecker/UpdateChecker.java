@@ -15,7 +15,7 @@
  */
 package com.rampo.updatechecker;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
@@ -42,7 +42,7 @@ public class UpdateChecker implements ASyncCheckResult, UpdateCheckerResult {
     static int DEFAULT_NOTICE_ICON_RES_ID = 0;
     static Notice DEFAULT_NOTICE = Notice.DIALOG;
 
-    static Activity mActivity;
+    static Context mContext;
     static Store mStore;
     static int mSuccessfulChecksRequired;
     static Notice mNotice;
@@ -51,8 +51,8 @@ public class UpdateChecker implements ASyncCheckResult, UpdateCheckerResult {
     static ASyncCheckResult mCheckResultCallback;
     static boolean mCustomImplementation;
 
-    public UpdateChecker(Activity activity) {
-        mActivity = activity;
+    public UpdateChecker(Context context) {
+        mContext = context;
         mStore = DEFAULT_STORE;
         mSuccessfulChecksRequired = DEFAULT_SUCCESSFUL_CHECKS_REQUIRED;
         mNotice = DEFAULT_NOTICE;
@@ -62,8 +62,8 @@ public class UpdateChecker implements ASyncCheckResult, UpdateCheckerResult {
         mCustomImplementation = false;
     }
 
-    public UpdateChecker(Activity activity, UpdateCheckerResult updateCheckerResult) {
-        mActivity = activity;
+    public UpdateChecker(Context context, UpdateCheckerResult updateCheckerResult) {
+        mContext = context;
         mStore = DEFAULT_STORE;
         mSuccessfulChecksRequired = DEFAULT_SUCCESSFUL_CHECKS_REQUIRED;
         mNotice = DEFAULT_NOTICE;
@@ -126,7 +126,7 @@ public class UpdateChecker implements ASyncCheckResult, UpdateCheckerResult {
      * Start the process
      */
     public static void start() {
-        ASyncCheck asynctask = new ASyncCheck(mStore, mCheckResultCallback, mActivity, mActivity.getPackageName());
+        ASyncCheck asynctask = new ASyncCheck(mStore, mCheckResultCallback, mContext, mContext.getPackageName());
         asynctask.execute();
     }
 
@@ -134,7 +134,7 @@ public class UpdateChecker implements ASyncCheckResult, UpdateCheckerResult {
      * Start the process
      */
     public static void start(@NonNull String applicationId) {
-        ASyncCheck asynctask = new ASyncCheck(mStore, mCheckResultCallback, mActivity, applicationId);
+        ASyncCheck asynctask = new ASyncCheck(mStore, mCheckResultCallback, mContext, applicationId);
         asynctask.execute();
     }
 
@@ -145,7 +145,7 @@ public class UpdateChecker implements ASyncCheckResult, UpdateCheckerResult {
      */
     @Override
     public void versionDownloadableFound(String versionDownloadable) {
-        if (Comparator.isVersionDownloadableNewer(mActivity, versionDownloadable)) {
+        if (Comparator.isVersionDownloadableNewer(mContext, versionDownloadable)) {
             if (hasToShowNotice(versionDownloadable) && !hasUserTappedToNotShowNoticeAgain(versionDownloadable)) {
                 mLibraryResultCallaback.foundUpdateAndShowIt(versionDownloadable);
             } else {
@@ -258,7 +258,7 @@ public class UpdateChecker implements ASyncCheckResult, UpdateCheckerResult {
      * @see com.rampo.updatechecker.notice.Dialog#userHasTappedToNotShowNoticeAgain(android.content.Context, String)
      */
     private boolean hasUserTappedToNotShowNoticeAgain(String versionDownloadable) {
-        SharedPreferences prefs = mActivity.getSharedPreferences(PREFS_FILENAME, 0);
+        SharedPreferences prefs = mContext.getSharedPreferences(PREFS_FILENAME, 0);
         String prefKey = DONT_SHOW_AGAIN_PREF_KEY + versionDownloadable;
         return prefs.getBoolean(prefKey, false);
     }
@@ -267,7 +267,7 @@ public class UpdateChecker implements ASyncCheckResult, UpdateCheckerResult {
      * Show the Notice only if it's the first time or the number of the checks made is a multiple of the argument of setSuccessfulChecksRequired(int) method. (If you don't call setSuccessfulChecksRequired(int) the default is 5).
      */
     private boolean hasToShowNotice(String versionDownloadable) {
-        SharedPreferences prefs = mActivity.getSharedPreferences(PREFS_FILENAME, 0);
+        SharedPreferences prefs = mContext.getSharedPreferences(PREFS_FILENAME, 0);
         String prefKey = SUCCESSFUL_CHEKS_PREF_KEY + versionDownloadable;
         int mChecksMade = prefs.getInt(prefKey, 0);
         if (mChecksMade % mSuccessfulChecksRequired == 0 || mChecksMade == 0) {
@@ -284,7 +284,7 @@ public class UpdateChecker implements ASyncCheckResult, UpdateCheckerResult {
      */
     private void saveNumberOfChecksForUpdatedVersion(String versionDownloadable, int mChecksMade) {
         mChecksMade++;
-        SharedPreferences prefs = mActivity.getSharedPreferences(PREFS_FILENAME, 0);
+        SharedPreferences prefs = mContext.getSharedPreferences(PREFS_FILENAME, 0);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putInt(SUCCESSFUL_CHEKS_PREF_KEY + versionDownloadable, mChecksMade);
         editor.commit();
@@ -295,14 +295,14 @@ public class UpdateChecker implements ASyncCheckResult, UpdateCheckerResult {
      * Show Dialog
      */
     public void showDialog(String versionDownloadable) {
-        Dialog.show(mActivity, mStore, versionDownloadable, mNoticeIconResId);
+        Dialog.show(mContext, mStore, versionDownloadable, mNoticeIconResId);
     }
 
     /**
      * Show Notification
      */
     public static void showNotification() {
-        Notification.show(mActivity, mStore, mNoticeIconResId);
+        Notification.show(mContext, mStore, mNoticeIconResId);
     }
 
     /**
