@@ -17,6 +17,7 @@ package com.rampo.updatechecker;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 
 import com.rampo.updatechecker.notice.Dialog;
@@ -125,7 +126,15 @@ public class UpdateChecker implements ASyncCheckResult, UpdateCheckerResult {
      * Start the process
      */
     public static void start() {
-        ASyncCheck asynctask = new ASyncCheck(mStore, mCheckResultCallback, mActivity,mActivity.getPackageName());
+        ASyncCheck asynctask = new ASyncCheck(mStore, mCheckResultCallback, mActivity, mActivity.getPackageName());
+        asynctask.execute();
+    }
+
+    /**
+     * Start the process
+     */
+    public static void start(@NonNull String applicationId) {
+        ASyncCheck asynctask = new ASyncCheck(mStore, mCheckResultCallback, mActivity, applicationId);
         asynctask.execute();
     }
 
